@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ContosoCrafts.WebSite.Pages.Product
 {
+    /// <summary>
+    /// Index Page will return all the data to show the user
+    /// </summary>
     public class IndexModel : PageModel
     {
         /// <summary>
