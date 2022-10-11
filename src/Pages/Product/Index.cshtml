@@ -13,7 +13,13 @@
             </tr>
         </thead>
         <tbody>
-
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.Title</td>
+                    @*<td><a asp-page="Read" asp-route-id="@product.Id">Read</a></td>*@
+                </tr>
+            }
         </tbody>
     </table>
 </div>
