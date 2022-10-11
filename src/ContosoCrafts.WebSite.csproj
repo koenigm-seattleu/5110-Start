@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Content Update="wwwroot\data\products.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
