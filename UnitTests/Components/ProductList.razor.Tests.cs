@@ -22,7 +22,7 @@ namespace UnitTests.Components
         #endregion TestSetup
 
         [Test]
-        public void ProductList_Default_Should_Return_Content()
+        public void ProductList_Valid_Default_Should_Return_Content()
         {
             // Arrange
             Services.AddSingleton<JsonFileProductService>(TestHelper.ProductService);
