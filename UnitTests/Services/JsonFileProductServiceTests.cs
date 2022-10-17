@@ -20,6 +20,20 @@ namespace UnitTests.Pages.Product.AddRating
         #endregion TestSetup
 
         #region AddRating
+        //[Test]
+        //public void AddRating_InValid_....()
+        //{
+        //    // Arrange
+
+        //    // Act
+        //    //var result = TestHelper.ProductService.AddRating(null, 1);
+
+        //    // Assert
+        //    //Assert.AreEqual(false, result);
+        //}
+
+        // ....
+
         [Test]
         public void AddRating_InValid_Product_Null_Should_Return_False()
         {
@@ -33,21 +47,7 @@ namespace UnitTests.Pages.Product.AddRating
         }
 
         [Test]
-        public void AddRating_InValid_()
-        {
-            // Arrange
-
-            // Act
-            //var result = TestHelper.ProductService.AddRating(null, 1);
-
-            // Assert
-            //Assert.AreEqual(false, result);
-        }
-
-        // ....
-
-        [Test]
-        public void AddRating_Valid_Product_Valid_Rating_Valid_Should_Return_True()
+        public void AddRating_Valid_Product_Rating_5_Should_Return_True()
         {
             // Arrange
 
