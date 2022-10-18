@@ -47,6 +47,18 @@ namespace UnitTests.Pages.Product.AddRating
         }
 
         [Test]
+        public void AddRating_InValid_Product_Empty_Should_Return_False()
+        {
+            // Arrange
+
+            // Act
+            var result = TestHelper.ProductService.AddRating("", 1);
+
+            // Assert
+            Assert.AreEqual(false, result);
+        }
+
+        [Test]
         public void AddRating_Valid_Product_Rating_5_Should_Return_True()
         {
             // Arrange
