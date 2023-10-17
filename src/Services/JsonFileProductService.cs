@@ -61,13 +61,13 @@ namespace ContosoCrafts.WebSite.Services
                 return false;
             }
 
-            // Check Rating for boundries, do not allow ratings below 0
+            // Check Rating for boundaries, do not allow ratings below 0
             if (rating < 0)
             {
                 return false;
             }
 
-            // Check Rating for boundries, do not allow ratings above 5
+            // Check Rating for boundaries, do not allow ratings above 5
             if (rating > 5)
             {
                 return false;
@@ -156,7 +156,7 @@ namespace ContosoCrafts.WebSite.Services
                 Image = "",
             };
 
-            // Get the current set, and append the new record to it becuase IEnumerable does not have Add
+            // Get the current set, and append the new record to it because IEnumerable does not have Add
             var dataSet = GetAllData();
             dataSet = dataSet.Append(data);
 
