@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 
 using NUnit.Framework;
@@ -22,7 +22,7 @@ namespace UnitTests.Pages.Startup
 
         #region ConfigureServices
         [Test]
-        public void Startup_ConfigureServices_Valid_Defaut_Should_Pass()
+        public void Startup_ConfigureServices_Valid_Default_Should_Pass()
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<Startup>().Build();
             Assert.IsNotNull(webHost);
@@ -31,7 +31,7 @@ namespace UnitTests.Pages.Startup
 
         #region Configure
         [Test]
-        public void Startup_Configure_Valid_Defaut_Should_Pass()
+        public void Startup_Configure_Valid_Default_Should_Pass()
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<Startup>().Build();
             Assert.IsNotNull(webHost);
