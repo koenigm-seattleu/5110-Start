@@ -45,8 +45,8 @@ namespace UnitTests.Pages.Error
             activity.Stop();
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual(activity.Id, pageModel.RequestId);
+            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pageModel.RequestId, Is.EqualTo(activity.Id));
         }
 
         [Test]
@@ -60,9 +60,9 @@ namespace UnitTests.Pages.Error
             // Reset
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual("trace", pageModel.RequestId);
-            Assert.AreEqual(true, pageModel.ShowRequestId);
+            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pageModel.RequestId, Is.EqualTo("trace"));
+            Assert.That(pageModel.ShowRequestId, Is.True);
         }
         #endregion OnGet
     }
