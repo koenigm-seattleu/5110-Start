@@ -28,13 +28,13 @@ namespace UnitTests.Components
             Services.AddSingleton<JsonFileProductService>(TestHelper.ProductService);
 
             // Act
-            var page = RenderComponent<ProductList>();
+            var page = Render<ProductList>();
 
             // Get the Cards retrned
             var result = page.Markup;
 
             // Assert
-            Assert.AreEqual(true, result.Contains("The Quantified Cactus: An Easy Plant Soil Moisture Sensor"));
+            Assert.That(result.Contains("The Quantified Cactus: An Easy Plant Soil Moisture Sensor"), Is.True);
         }
     }
 }
