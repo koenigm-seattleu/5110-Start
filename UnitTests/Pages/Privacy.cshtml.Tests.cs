@@ -39,7 +39,7 @@ namespace UnitTests.Pages.Privacy
             // Reset
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
+            Assert.That(pageModel.ModelState.IsValid, Is.True);
         }
 
         #endregion OnGet
