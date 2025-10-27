@@ -43,7 +43,7 @@ namespace UnitTests.Pages.Product.AddRating
             var result = TestHelper.ProductService.AddRating(null, 1);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace UnitTests.Pages.Product.AddRating
             var result = TestHelper.ProductService.AddRating("", 1);
 
             // Assert
-            Assert.AreEqual(false, result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -72,9 +72,9 @@ namespace UnitTests.Pages.Product.AddRating
             var dataNewList = TestHelper.ProductService.GetAllData().First();
 
             // Assert
-            Assert.AreEqual(true, result);
-            Assert.AreEqual(countOriginal + 1, dataNewList.Ratings.Length);
-            Assert.AreEqual(5, dataNewList.Ratings.Last());
+            Assert.That(result, Is.True);
+            Assert.That(dataNewList.Ratings.Length, Is.EqualTo(countOriginal + 1));
+            Assert.That(dataNewList.Ratings.Last(), Is.EqualTo(5));
         }
         #endregion AddRating
 
