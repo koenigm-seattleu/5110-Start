@@ -38,8 +38,8 @@ namespace UnitTests.Pages.Index
             pageModel.OnGet();
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual(true, pageModel.Products.ToList().Any());
+            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pageModel.Products.ToList().Any(), Is.True);
         }
         #endregion OnGet
     }
