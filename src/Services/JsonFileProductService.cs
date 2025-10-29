@@ -98,7 +98,7 @@ namespace ContosoCrafts.WebSite.Services
         /// <param name="data"></param>
         public ProductModel UpdateData(ProductModel data)
         {
-            var products = GetAllData();
+            var products = GetAllData().ToList();
             var productData = products.FirstOrDefault(x => x.Id.Equals(data.Id));
             if (productData == null)
             {
@@ -106,18 +106,15 @@ namespace ContosoCrafts.WebSite.Services
             }
 
             // Update the data to the new passed in values
-            productData.Title = data.Title;
-            productData.Description = data.Description.Trim();
-            productData.Url = data.Url;
-            productData.Image = data.Image;
-
+            productData.Title = string.IsNullOrWhiteSpace(data.Title) ? productData.Title : data.Title.Trim();
+            productData.Description = string.IsNullOrWhiteSpace(data.Description) ? productData.Description : data.Description.Trim();
+            productData.Url = string.IsNullOrWhiteSpace(data.Url) ? productData.Url : data.Url;
+            productData.Image = string.IsNullOrWhiteSpace(data.Image) ? productData.Image : data.Image;
             productData.Quantity = data.Quantity;
             productData.Price = data.Price;
-
-            productData.CommentList = data.CommentList;
+            productData.CommentList = data.CommentList ?? productData.CommentList;
 
             SaveData(products);
-
             return productData;
         }
 
