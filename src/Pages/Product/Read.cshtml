@@ -1,0 +1,18 @@
+@page
+@model ContosoCrafts.WebSite.Pages.Product.ReadModel
+@{
+ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <h2>@Model.Product.Title</h2>
+    <img src="@Model.Product.Image" alt="@Model.Product.Title" width="300" />
+    <p><strong>Description:</strong> @Model.Product.Description</p>
+    <p><strong>Price:</strong> $@Model.Product.Price</p>
+    <p><strong>Quantity:</strong> @Model.Product.Quantity</p>
+    <p><strong>Ratings:</strong> @(Model.Product.Ratings == null ? "No ratings yet" : string.Join(", ", Model.Product.Ratings))</p>
+
+    <div class="mt-3">
+        <a class="btn btn-secondary" asp-page="/Product/Index">Back to List</a>
+    </div>
+</div>
