@@ -53,7 +53,6 @@ namespace UnitTests
             {
                 TraceIdentifier = "trace",
             };
-            HttpContextDefault.HttpContext.TraceIdentifier = "trace";
 
             ModelState = new ModelStateDictionary();
 
@@ -69,11 +68,8 @@ namespace UnitTests
                 HttpContext = HttpContextDefault
             };
 
+            UrlHelperFactory = new UrlHelperFactory();
             ProductService = new JsonFileProductService(MockWebHostEnvironment.Object);
-
-            JsonFileProductService productService;
-
-            productService = new JsonFileProductService(TestHelper.MockWebHostEnvironment.Object);
         }
     }
 }
