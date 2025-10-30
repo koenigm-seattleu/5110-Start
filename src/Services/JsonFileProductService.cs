@@ -164,17 +164,19 @@ namespace ContosoCrafts.WebSite.Services
         /// Remove the item from the system
         /// </summary>
         /// <returns></returns>
-        public ProductModel DeleteData(string id)
+        public bool DeleteData(string id)
         {
-            // Get the current set, and append the new record to it
-            var dataSet = GetAllData();
-            var data = dataSet.FirstOrDefault(m => m.Id.Equals(id));
+            var products = GetAllData();
+            var productToDelete = products.FirstOrDefault(x => x.Id == id);
 
-            var newDataSet = GetAllData().Where(m => m.Id.Equals(id) == false);
-            
-            SaveData(newDataSet);
+            if (productToDelete == null)
+            {
+                return false;
+            }
 
-            return data;
+            var updatedProducts = products.Where(x => x.Id != id);
+            SaveData(updatedProducts);
+            return true;
         }
         
     }
