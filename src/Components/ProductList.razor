@@ -1,10 +1,16 @@
-@using ContosoCrafts.WebSite.Models
+﻿@using ContosoCrafts.WebSite.Models
 @using ContosoCrafts.WebSite.Services
 @using Microsoft.AspNetCore.Components.Web
 @inject JsonFileProductService ProductService
 
+<div>
+    <br/>
+    <input type="text" placeholder="Search products..." @bind="searchTerm"/>
+    <br/>
+</div>
+
 <div class="card-columns">
-    @foreach (var product in ProductService.GetAllData())
+    @foreach (var product in CurrentProductList)
     {
         <div class="card">
             <div class="card-img" style="background-image: url('@product.Image');">
@@ -75,6 +81,13 @@
 
 @code
 {
+    string searchTerm = string.Empty;
+
+    IEnumerable<ProductModel> CurrentProductList =>
+        string.IsNullOrWhiteSpace(searchTerm)
+            ? ProductService.GetAllData()
+            : ProductService.GetAllData().Where(p => p.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+
     ProductModel selectedProduct;
     string selectedProductId;
 
