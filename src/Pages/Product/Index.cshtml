@@ -22,6 +22,7 @@ ViewData["Title"] = "Index page";
                 <td>
                     <a class="btn btn-primary" asp-page="/Product/Read" asp-route-id="@product.Id">View Details</a>
                     <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-secondary">Edit</a>
+                    <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
