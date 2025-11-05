@@ -38,6 +38,11 @@ namespace ContosoCrafts.WebSite.Pages.Product
         {
             System.Console.WriteLine("OnPost called for Product: " + Product?.Id);
 
+            if (Product == null)
+            {
+                return RedirectToPage("/Product/Index");
+            }
+            
             if (!ModelState.IsValid)
             {
                 return Page();
