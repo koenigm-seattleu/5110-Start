@@ -44,5 +44,44 @@ namespace UnitTests.Pages.Product
             var result = pageModel.OnPost() as RedirectToPageResult;
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
+        
+        [Test]
+        public void OnGet_Null_Id_Should_Redirect_To_Index()
+        {
+            // Arrange + Act
+            var result = pageModel.OnGet(null) as RedirectToPageResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
+        }
+
+        [Test]
+        public void OnPost_Null_Product_Id_Should_Redirect_To_Index()
+        {
+            // Arrange
+            pageModel.Product = new ContosoCrafts.WebSite.Models.ProductModel { Id = null };
+
+            // Act
+            var result = pageModel.OnPost() as RedirectToPageResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
+        }
+
+        [Test]
+        public void OnPost_Null_Product_Should_Redirect_To_Index()
+        {
+            // Arrange
+            pageModel.Product = null;
+
+            // Act
+            var result = pageModel.OnPost() as RedirectToPageResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
+        }
     }
 }
