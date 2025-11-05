@@ -63,7 +63,30 @@ namespace UnitTests.Pages.Product
             Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
         }
         #endregion OnGet
+        [Test]
+        public void OnGet_Unknown_Id_Should_Redirect_To_Index()
+        {
+            // Act
+            var result = pageModel.OnGet("fake123") as RedirectToPageResult;
 
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
+        }
+
+        [Test]
+        public void OnPost_Null_Product_Should_Not_Throw_And_Redirect_To_Index()
+        {
+            // Arrange
+            pageModel.Product = null;
+
+            // Act
+            var result = pageModel.OnPost() as RedirectToPageResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PageName, Is.EqualTo("/Product/Index"));
+        }
         #region OnPost
         [Test]
         public void OnPost_Valid_Should_Update_And_Redirect()
@@ -91,7 +114,8 @@ namespace UnitTests.Pages.Product
         [Test]
         public void OnPost_Invalid_Model_Should_Return_Page()
         {
-            // Arrange
+            // 
+            pageModel.Product = TestHelper.ProductService.GetAllData().First();
             pageModel.ModelState.AddModelError("Title", "Required");
 
             // Act
