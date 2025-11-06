@@ -78,6 +78,57 @@ namespace UnitTests.Pages.Product.AddRating
         }
         #endregion AddRating
         
+        #region UpdateData
+        [Test]
+        public void UpdateData_Valid_Product_Should_Return_True()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var originalTitle = product.Title;
+            product.Title = "Updated Title for Test";
+
+            // Act
+            var result = TestHelper.ProductService.UpdateData(product);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True);
+            Assert.That(updated.Title, Is.EqualTo("Updated Title for Test"));
+
+            // Cleanup
+            product.Title = originalTitle;
+            TestHelper.ProductService.UpdateData(product);
+        }
+
+        [Test]
+        public void UpdateData_Null_Product_Should_Return_False()
+        {
+            // Act
+            var result = TestHelper.ProductService.UpdateData(null);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void UpdateData_Invalid_Id_Should_Return_False()
+        {
+            // Arrange
+            var fakeProduct = new ProductModel
+            {
+                Id = "not-exist-id",
+                Title = "Fake Product"
+            };
+
+            // Act
+            var result = TestHelper.ProductService.UpdateData(fakeProduct);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
+
+        #endregion UpdateData
+        
         #region GetAllData
         [Test]
         public void GetAllData_Should_Return_Products()
