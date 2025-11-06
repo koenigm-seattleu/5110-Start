@@ -20,20 +20,6 @@ namespace UnitTests.Pages.Product.AddRating
         #endregion TestSetup
 
         #region AddRating
-        //[Test]
-        //public void AddRating_InValid_....()
-        //{
-        //    // Arrange
-
-        //    // Act
-        //    //var result = TestHelper.ProductService.AddRating(null, 1);
-
-        //    // Assert
-        //    //Assert.AreEqual(false, result);
-        //}
-
-        // ....
-
         [Test]
         public void AddRating_InValid_Product_Null_Should_Return_False()
         {
@@ -75,6 +61,144 @@ namespace UnitTests.Pages.Product.AddRating
             Assert.That(result, Is.True);
             Assert.That(dataNewList.Ratings.Length, Is.EqualTo(countOriginal + 1));
             Assert.That(dataNewList.Ratings.Last(), Is.EqualTo(5));
+        }
+        [Test]
+        public void AddRating_Rating_Below_Zero_Should_Return_False()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, -1);
+
+            // Assert
+            Assert.That(result, Is.False, "Rating below 0 should return false");
+        }
+
+        [Test]
+        public void AddRating_Rating_Above_Five_Should_Return_False()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, 6);
+
+            // Assert
+            Assert.That(result, Is.False, "Rating above 5 should return false");
+        }
+
+        [Test]
+        public void AddRating_Valid_Rating_Zero_Should_Return_True()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, 0);
+
+            // Assert
+            Assert.That(result, Is.True, "Rating of 0 should be accepted as valid");
+        }
+        
+        [Test]
+        public void AddRating_Product_NotFound_Should_Return_False()
+        {
+            // Arrange
+            var invalidId = "non-existent-id";
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(invalidId, 3);
+
+            // Assert
+            Assert.That(result, Is.False, "Should return false when product is not found");
+        }
+
+        [Test]
+        public void AddRating_Product_With_Null_Ratings_Should_Initialize_And_Add()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            product.Ratings = null;
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 4);
+            var updatedProduct = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True, "Should succeed when Ratings was null");
+            Assert.That(updatedProduct.Ratings, Is.Not.Null, "Ratings array should be initialized");
+            Assert.That(updatedProduct.Ratings.Last(), Is.EqualTo(4), "New rating should be added correctly");
+        }
+        [Test]
+        public void AddRating_Should_Handle_Multiple_Sequential_Ratings()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var initialCount = product.Ratings?.Length ?? 0;
+
+            // Act
+            TestHelper.ProductService.AddRating(product.Id, 3);
+            TestHelper.ProductService.AddRating(product.Id, 4);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(updated.Ratings.Length, Is.GreaterThanOrEqualTo(initialCount + 2));
+            Assert.That(updated.Ratings.TakeLast(2).SequenceEqual(new[] { 3, 4 }), 
+                "Ratings list should contain newly added ratings");
+        }
+
+        [Test]
+        public void AddRating_Should_Create_Ratings_Array_When_Null_Then_Save()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            product.Ratings = null;
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 2);
+
+            // Assert
+            Assert.That(result, Is.True);
+            var updatedProduct = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+            Assert.That(updatedProduct.Ratings, Is.Not.Null);
+            Assert.That(updatedProduct.Ratings.Last(), Is.EqualTo(2));
+        }
+        
+        [Test]
+        public void AddRating_Should_SaveData_When_Valid_Input()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var originalRatings = product.Ratings?.ToArray() ?? new int[] { };
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 1);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True, "Valid product should trigger SaveData and return true");
+            Assert.That(updated.Ratings.Length, Is.GreaterThanOrEqualTo(originalRatings.Length),
+                "SaveData should persist new rating to products.json");
+        }
+        
+        [Test]
+        public void AddRating_When_Ratings_Null_Should_Initialize_And_Save()
+        {
+            var newProduct = TestHelper.ProductService.CreateData();
+            Assert.That(newProduct.Ratings, Is.Null);
+
+            var ok = TestHelper.ProductService.AddRating(newProduct.Id, 4);
+
+            Assert.That(ok, Is.True);
+
+            var reloaded = TestHelper.ProductService.GetAllData()
+                .First(x => x.Id == newProduct.Id);
+
+            Assert.That(reloaded.Ratings, Is.Not.Null);
+            Assert.That(reloaded.Ratings.Last(), Is.EqualTo(4));
+
+            TestHelper.ProductService.DeleteData(newProduct.Id);
         }
         #endregion AddRating
         
