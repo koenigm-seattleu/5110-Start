@@ -96,13 +96,17 @@ namespace ContosoCrafts.WebSite.Services
         /// Save to the data store
         /// </summary>
         /// <param name="data"></param>
-        public ProductModel UpdateData(ProductModel data)
+        public bool UpdateData(ProductModel data)
         {
+            if (data == null)
+            {
+                return false;
+            }
             var products = GetAllData().ToList();
             var productData = products.FirstOrDefault(x => x.Id.Equals(data.Id));
             if (productData == null)
             {
-                return null;
+                return false;
             }
 
             // Update the data to the new passed in values
@@ -115,7 +119,7 @@ namespace ContosoCrafts.WebSite.Services
             productData.CommentList = data.CommentList ?? productData.CommentList;
 
             SaveData(products);
-            return productData;
+            return true;
         }
 
         /// <summary>
