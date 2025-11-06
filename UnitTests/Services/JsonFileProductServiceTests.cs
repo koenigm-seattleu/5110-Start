@@ -160,5 +160,51 @@ namespace UnitTests.Pages.Product.AddRating
         }
         #endregion CreateData
         
+        #region DeleteData
+
+        [Test]
+        public void DeleteData_Valid_Id_Should_Return_True()
+        {
+            // Arrange
+            var newProduct = TestHelper.ProductService.CreateData();
+            var id = newProduct.Id;
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(id);
+            var productStillExists = TestHelper.ProductService.GetAllData().Any(p => p.Id == id);
+
+            // Assert
+            Assert.That(result, Is.True, "Delete should return true for valid ID");
+            Assert.That(productStillExists, Is.False, "Product should no longer exist after deletion");
+        }
+
+        [Test]
+        public void DeleteData_Invalid_Id_Should_Return_False()
+        {
+            // Arrange
+            var invalidId = "not-exist-id";
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(invalidId);
+
+            // Assert
+            Assert.That(result, Is.False, "Delete should return false for invalid ID");
+        }
+
+        [Test]
+        public void DeleteData_Null_Id_Should_Return_False()
+        {
+            // Arrange
+            string nullId = null;
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(nullId);
+
+            // Assert
+            Assert.That(result, Is.False, "Delete should return false when ID is null");
+        }
+
+        #endregion DeleteData
+        
     }
 }
