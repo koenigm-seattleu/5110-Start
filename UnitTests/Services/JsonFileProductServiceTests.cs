@@ -20,20 +20,6 @@ namespace UnitTests.Pages.Product.AddRating
         #endregion TestSetup
 
         #region AddRating
-        //[Test]
-        //public void AddRating_InValid_....()
-        //{
-        //    // Arrange
-
-        //    // Act
-        //    //var result = TestHelper.ProductService.AddRating(null, 1);
-
-        //    // Assert
-        //    //Assert.AreEqual(false, result);
-        //}
-
-        // ....
-
         [Test]
         public void AddRating_InValid_Product_Null_Should_Return_False()
         {
@@ -76,7 +62,273 @@ namespace UnitTests.Pages.Product.AddRating
             Assert.That(dataNewList.Ratings.Length, Is.EqualTo(countOriginal + 1));
             Assert.That(dataNewList.Ratings.Last(), Is.EqualTo(5));
         }
-        #endregion AddRating
+        [Test]
+        public void AddRating_Rating_Below_Zero_Should_Return_False()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
 
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, -1);
+
+            // Assert
+            Assert.That(result, Is.False, "Rating below 0 should return false");
+        }
+
+        [Test]
+        public void AddRating_Rating_Above_Five_Should_Return_False()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, 6);
+
+            // Assert
+            Assert.That(result, Is.False, "Rating above 5 should return false");
+        }
+
+        [Test]
+        public void AddRating_Valid_Rating_Zero_Should_Return_True()
+        {
+            // Arrange
+            var data = TestHelper.ProductService.GetAllData().First();
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(data.Id, 0);
+
+            // Assert
+            Assert.That(result, Is.True, "Rating of 0 should be accepted as valid");
+        }
+        
+        [Test]
+        public void AddRating_Product_NotFound_Should_Return_False()
+        {
+            // Arrange
+            var invalidId = "non-existent-id";
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(invalidId, 3);
+
+            // Assert
+            Assert.That(result, Is.False, "Should return false when product is not found");
+        }
+
+        [Test]
+        public void AddRating_Product_With_Null_Ratings_Should_Initialize_And_Add()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            product.Ratings = null;
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 4);
+            var updatedProduct = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True, "Should succeed when Ratings was null");
+            Assert.That(updatedProduct.Ratings, Is.Not.Null, "Ratings array should be initialized");
+            Assert.That(updatedProduct.Ratings.Last(), Is.EqualTo(4), "New rating should be added correctly");
+        }
+        [Test]
+        public void AddRating_Should_Handle_Multiple_Sequential_Ratings()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var initialCount = product.Ratings?.Length ?? 0;
+
+            // Act
+            TestHelper.ProductService.AddRating(product.Id, 3);
+            TestHelper.ProductService.AddRating(product.Id, 4);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(updated.Ratings.Length, Is.GreaterThanOrEqualTo(initialCount + 2));
+            Assert.That(updated.Ratings.TakeLast(2).SequenceEqual(new[] { 3, 4 }), 
+                "Ratings list should contain newly added ratings");
+        }
+
+        [Test]
+        public void AddRating_Should_Create_Ratings_Array_When_Null_Then_Save()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            product.Ratings = null;
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 2);
+
+            // Assert
+            Assert.That(result, Is.True);
+            var updatedProduct = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+            Assert.That(updatedProduct.Ratings, Is.Not.Null);
+            Assert.That(updatedProduct.Ratings.Last(), Is.EqualTo(2));
+        }
+        
+        [Test]
+        public void AddRating_Should_SaveData_When_Valid_Input()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var originalRatings = product.Ratings?.ToArray() ?? new int[] { };
+
+            // Act
+            var result = TestHelper.ProductService.AddRating(product.Id, 1);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True, "Valid product should trigger SaveData and return true");
+            Assert.That(updated.Ratings.Length, Is.GreaterThanOrEqualTo(originalRatings.Length),
+                "SaveData should persist new rating to products.json");
+        }
+        
+        [Test]
+        public void AddRating_When_Ratings_Null_Should_Initialize_And_Save()
+        {
+            var newProduct = TestHelper.ProductService.CreateData();
+            Assert.That(newProduct.Ratings, Is.Null);
+
+            var ok = TestHelper.ProductService.AddRating(newProduct.Id, 4);
+
+            Assert.That(ok, Is.True);
+
+            var reloaded = TestHelper.ProductService.GetAllData()
+                .First(x => x.Id == newProduct.Id);
+
+            Assert.That(reloaded.Ratings, Is.Not.Null);
+            Assert.That(reloaded.Ratings.Last(), Is.EqualTo(4));
+
+            TestHelper.ProductService.DeleteData(newProduct.Id);
+        }
+        #endregion AddRating
+        
+        #region UpdateData
+        [Test]
+        public void UpdateData_Valid_Product_Should_Return_True()
+        {
+            // Arrange
+            var product = TestHelper.ProductService.GetAllData().First();
+            var originalTitle = product.Title;
+            product.Title = "Updated Title for Test";
+
+            // Act
+            var result = TestHelper.ProductService.UpdateData(product);
+            var updated = TestHelper.ProductService.GetAllData().First(x => x.Id == product.Id);
+
+            // Assert
+            Assert.That(result, Is.True);
+            Assert.That(updated.Title, Is.EqualTo("Updated Title for Test"));
+
+            // Cleanup
+            product.Title = originalTitle;
+            TestHelper.ProductService.UpdateData(product);
+        }
+
+        [Test]
+        public void UpdateData_Null_Product_Should_Return_False()
+        {
+            // Act
+            var result = TestHelper.ProductService.UpdateData(null);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void UpdateData_Invalid_Id_Should_Return_False()
+        {
+            // Arrange
+            var fakeProduct = new ProductModel
+            {
+                Id = "not-exist-id",
+                Title = "Fake Product"
+            };
+
+            // Act
+            var result = TestHelper.ProductService.UpdateData(fakeProduct);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
+
+        #endregion UpdateData
+        
+        #region GetAllData
+        [Test]
+        public void GetAllData_Should_Return_Products()
+        {
+            // Act
+            var result = TestHelper.ProductService.GetAllData();
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Count(), Is.GreaterThan(0));
+        }
+        #endregion GetAllData
+        
+        #region CreateData
+        [Test]
+        public void CreateData_Valid_Should_Create_New_Product()
+        {
+            // Arrange
+            var oldCount = TestHelper.ProductService.GetAllData().Count();
+
+            // Act
+            var result = TestHelper.ProductService.CreateData();
+            var newCount = TestHelper.ProductService.GetAllData().Count();
+
+            // Assert
+            Assert.That(result, Is.Not.Null, "Created product should not be null");
+            Assert.That(result.Id, Is.Not.Empty, "Created product should have an ID");
+            Assert.That(newCount, Is.EqualTo(oldCount + 1), "Product count should increase by 1");
+        }
+        #endregion CreateData
+        
+        #region DeleteData
+
+        [Test]
+        public void DeleteData_Valid_Id_Should_Return_True()
+        {
+            // Arrange
+            var newProduct = TestHelper.ProductService.CreateData();
+            var id = newProduct.Id;
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(id);
+            var productStillExists = TestHelper.ProductService.GetAllData().Any(p => p.Id == id);
+
+            // Assert
+            Assert.That(result, Is.True, "Delete should return true for valid ID");
+            Assert.That(productStillExists, Is.False, "Product should no longer exist after deletion");
+        }
+
+        [Test]
+        public void DeleteData_Invalid_Id_Should_Return_False()
+        {
+            // Arrange
+            var invalidId = "not-exist-id";
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(invalidId);
+
+            // Assert
+            Assert.That(result, Is.False, "Delete should return false for invalid ID");
+        }
+
+        [Test]
+        public void DeleteData_Null_Id_Should_Return_False()
+        {
+            // Arrange
+            string nullId = null;
+
+            // Act
+            var result = TestHelper.ProductService.DeleteData(nullId);
+
+            // Assert
+            Assert.That(result, Is.False, "Delete should return false when ID is null");
+        }
+
+        #endregion DeleteData
+        
     }
 }
