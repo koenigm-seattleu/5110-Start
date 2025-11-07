@@ -1,25 +1,31 @@
 ﻿@page
 @model ContosoCrafts.WebSite.Pages.Product.IndexModel
 @{
-    ViewData["Title"] = "Index page";
+ViewData["Title"] = "Index page";
 }
 
 <div class="container">
+    <a asp-page="/Product/Create" class="btn btn-success mb-3">Create New Product</a>
+
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                <th>Title</th>
-                <th>Action</th>
-            </tr>
+        <tr>
+            <th>Title</th>
+            <th>Action</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var product in Model.Products)
-            {
-                <tr>
-                    <td>@product.Title</td>
-                    @*<td><a asp-page="Read" asp-route-id="@product.Id">Read</a></td>*@
-                </tr>
-            }
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Title</td>
+                <td>
+                    <a class="btn btn-primary" asp-page="/Product/Read" asp-route-id="@product.Id">View Details</a>
+                    <a asp-page="/Product/Update" asp-route-id="@product.Id" class="btn btn-secondary">Edit</a>
+                    <a asp-page="/Product/Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

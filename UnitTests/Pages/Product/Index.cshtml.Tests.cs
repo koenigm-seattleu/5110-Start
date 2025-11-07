@@ -82,8 +82,8 @@ namespace UnitTests.Pages.Product.Index
             pageModel.OnGet();
 
             // Assert
-            Assert.AreEqual(true, pageModel.ModelState.IsValid);
-            Assert.AreEqual(15, pageModel.Products.ToList().Count);
+            Assert.That(pageModel.ModelState.IsValid, Is.True);
+            Assert.That(pageModel.Products.ToList().Count, Is.EqualTo(15));
         }
         #endregion OnGet
     }

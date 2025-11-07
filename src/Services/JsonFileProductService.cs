@@ -98,7 +98,7 @@ namespace ContosoCrafts.WebSite.Services
         /// <param name="data"></param>
         public ProductModel UpdateData(ProductModel data)
         {
-            var products = GetAllData();
+            var products = GetAllData().ToList();
             var productData = products.FirstOrDefault(x => x.Id.Equals(data.Id));
             if (productData == null)
             {
@@ -106,18 +106,15 @@ namespace ContosoCrafts.WebSite.Services
             }
 
             // Update the data to the new passed in values
-            productData.Title = data.Title;
-            productData.Description = data.Description.Trim();
-            productData.Url = data.Url;
-            productData.Image = data.Image;
-
+            productData.Title = string.IsNullOrWhiteSpace(data.Title) ? productData.Title : data.Title.Trim();
+            productData.Description = string.IsNullOrWhiteSpace(data.Description) ? productData.Description : data.Description.Trim();
+            productData.Url = string.IsNullOrWhiteSpace(data.Url) ? productData.Url : data.Url;
+            productData.Image = string.IsNullOrWhiteSpace(data.Image) ? productData.Image : data.Image;
             productData.Quantity = data.Quantity;
             productData.Price = data.Price;
-
-            productData.CommentList = data.CommentList;
+            productData.CommentList = data.CommentList ?? productData.CommentList;
 
             SaveData(products);
-
             return productData;
         }
 
@@ -153,10 +150,8 @@ namespace ContosoCrafts.WebSite.Services
                 Title = "Enter Title",
                 Description = "Enter Description",
                 Url = "Enter URL",
-                Image = "",
+                Image = ""
             };
-
-            // Get the current set, and append the new record to it because IEnumerable does not have Add
             var dataSet = GetAllData();
             dataSet = dataSet.Append(data);
 
@@ -169,17 +164,19 @@ namespace ContosoCrafts.WebSite.Services
         /// Remove the item from the system
         /// </summary>
         /// <returns></returns>
-        public ProductModel DeleteData(string id)
+        public bool DeleteData(string id)
         {
-            // Get the current set, and append the new record to it
-            var dataSet = GetAllData();
-            var data = dataSet.FirstOrDefault(m => m.Id.Equals(id));
+            var products = GetAllData();
+            var productToDelete = products.FirstOrDefault(x => x.Id == id);
 
-            var newDataSet = GetAllData().Where(m => m.Id.Equals(id) == false);
-            
-            SaveData(newDataSet);
+            if (productToDelete == null)
+            {
+                return false;
+            }
 
-            return data;
+            var updatedProducts = products.Where(x => x.Id != id);
+            SaveData(updatedProducts);
+            return true;
         }
         
     }
